@@ -7,14 +7,14 @@ import QuestionBoard from '@/features/quiz/QuestionBoard';
 import QuizResult from '@/features/quiz/QuizResult';
 
 const CHAPTER_TITLES = {
-  1: 'Pengantar Kepramukaan',
-  3: 'Sejarah Pandu Dunia',
-  5: 'Scouting for Boys',
-  9: 'Sandi & Semboyan',
-  12: 'Morse',
-  15: 'Tali Temali',
-  20: 'Kompas & Navigasi',
-  24: 'Pertolongan Pertama (P3K)',
+  1: 'PENGERTIAN, SIFAT, FUNGSI',
+  3: 'BIOGRAFI BADEN-POWELL',
+  5: 'SCOUTING FOR BOYS',
+  9: 'BERKEMAH (HIDUP DI ALAM BEBAS)',
+  12: 'MORSE',
+  15: 'MEMBACA PETA (NAVIGASI)',
+  20: 'SANDI PRAMUKA',
+  24: 'P3K dan KESEHATAN',
 };
 
 export default function ChapterPageMobile() {
