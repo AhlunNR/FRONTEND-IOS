@@ -5,14 +5,14 @@ import Footer from '@/components/Footer';
 import { Target, Timer } from 'lucide-react';
 
 const CHAPTER_TITLES = {
-  1: 'PENGERTIAN, SIFAT, FUNGSI',
+  1: 'PENGERTIAN, SIFAT, DAN FUNGSI',
   3: 'BIOGRAFI BADEN-POWELL',
   5: 'SCOUTING FOR BOYS',
   9: 'BERKEMAH (HIDUP DI ALAM BEBAS)',
   12: 'MORSE',
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
-  24: 'P3K dan KESEHATAN',
+  24: 'P3K DAN KESEHATAN',
 };
 
 export default function HomePageMobile() {
