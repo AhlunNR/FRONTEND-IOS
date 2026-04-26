@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchQuestionsByChapter, submitAnswers as submitAnswersApi } from '@/services/api';
+import useHistoryStore from './useHistoryStore';
 
 const useQuizStore = create(
   persist(
@@ -94,6 +95,14 @@ const useQuizStore = create(
 
         try {
           const result = await submitAnswersApi(chapter, answers, timeSpent);
+          
+          // Save to history
+          useHistoryStore.getState().addHistoryRecord({
+            id: Date.now().toString(),
+            timestamp: new Date().toISOString(),
+            ...result
+          });
+
           set({
             result,
             quizStatus: 'finished',

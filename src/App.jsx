@@ -3,11 +3,13 @@ import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import ChapterPage from './pages/ChapterPage';
 import NotFoundPage from './pages/NotFoundPage';
+import HistoryPage from './pages/HistoryPage';
 import StaggeredMenu from './components/StaggeredMenu';
 
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
   { label: 'Simulasi', ariaLabel: 'Pilih simulasi bab', link: '/simulasi' },
+  { label: 'History', ariaLabel: 'Lihat riwayat kuis', link: '/history' },
 ];
 
 const socialItems = [
@@ -60,6 +62,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/simulasi" element={<HomePage />} />
         <Route path="/chapter/:id" element={<ChapterPage />} />
+        <Route path="/history" element={<HistoryPage />} />
         {/* Catch-all route for 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
