@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { fetchQuestionsByChapter, submitAnswers as submitAnswersApi } from '@/services/api';
+import { fetchQuestionsByChapter, submitAnswers as submitAnswersApi, saveHistoryToServer } from '@/services/api';
 import useHistoryStore from './useHistoryStore';
 
 const useQuizStore = create(
@@ -95,12 +95,40 @@ const useQuizStore = create(
 
         try {
           const result = await submitAnswersApi(chapter, answers, timeSpent);
-          
-          // Save to history
-          useHistoryStore.getState().addHistoryRecord({
+          // Save to local history
+          const getGrade = (s) => {
+            if (s >= 90) return 'A';
+            if (s >= 80) return 'B';
+            if (s >= 70) return 'C';
+            return 'D';
+          };
+
+          const historyRecord = {
             id: Date.now().toString(),
             timestamp: new Date().toISOString(),
             ...result
+          };
+
+          useHistoryStore.getState().addHistoryRecord(historyRecord);
+
+          // Generate or retrieve a unique device ID
+          let deviceId = localStorage.getItem('boyman-device-id');
+          if (!deviceId) {
+            deviceId = 'device-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
+            localStorage.setItem('boyman-device-id', deviceId);
+          }
+
+          // Send to server (fire-and-forget, won't block UI)
+          saveHistoryToServer({
+            deviceId,
+            chapter: result.chapter,
+            score: result.score,
+            grade: getGrade(result.score),
+            correctCount: result.correctCount,
+            wrongCount: result.wrongCount,
+            unansweredCount: result.unansweredCount,
+            totalQuestions: result.totalQuestions,
+            timeSpent: result.timeSpent || 0,
           });
 
           set({

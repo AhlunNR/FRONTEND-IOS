@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import ChapterPage from './pages/ChapterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import HistoryPage from './pages/HistoryPage';
+import AdminPage from './pages/AdminPage';
 import StaggeredMenu from './components/StaggeredMenu';
 
 const menuItems = [
@@ -31,8 +32,9 @@ const ReactLogo = () => (
 function GlobalMenu() {
   const location = useLocation();
   const isQuizPage = location.pathname.startsWith('/chapter');
+  const isAdminPage = location.pathname.startsWith('/admin');
 
-  if (isQuizPage) return null;
+  if (isQuizPage || isAdminPage) return null;
 
   return (
     <StaggeredMenu
@@ -63,6 +65,8 @@ function App() {
         <Route path="/simulasi" element={<HomePage />} />
         <Route path="/chapter/:id" element={<ChapterPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        {/* Secret admin route - tidak muncul di menu */}
+        <Route path="/admin" element={<AdminPage />} />
         {/* Catch-all route for 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -45,3 +45,36 @@ export async function submitAnswers(chapterId, answers, timeSpent) {
 
   return json.data;
 }
+
+/**
+ * Menyimpan riwayat kuis ke server (Supabase)
+ */
+export async function saveHistoryToServer(record) {
+  try {
+    const res = await fetch(`${API_URL}/history`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(record),
+    });
+    const json = await res.json();
+    return json.data;
+  } catch (err) {
+    // Gagal kirim ke server tidak boleh mengganggu UX, cukup log
+    console.warn('Gagal menyimpan riwayat ke server:', err.message);
+    return null;
+  }
+}
+
+/**
+ * Mengambil semua riwayat kuis dari server (untuk admin)
+ */
+export async function fetchAllHistory() {
+  const res = await fetch(`${API_URL}/history`);
+  const json = await res.json();
+
+  if (!json.success) {
+    throw new Error(json.message || 'Gagal memuat riwayat');
+  }
+
+  return json.data;
+}
