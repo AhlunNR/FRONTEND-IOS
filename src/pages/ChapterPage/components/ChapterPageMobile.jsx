@@ -22,8 +22,6 @@ export default function ChapterPageMobile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showBoard, setShowBoard] = useState(false);
-  const [showNameModal, setShowNameModal] = useState(false);
-  const [nameInput, setNameInput] = useState('');
 
   const {
     questions,
@@ -58,56 +56,14 @@ export default function ChapterPageMobile() {
   });
 
   useEffect(() => {
-    // Check if user has set their name
-    const savedName = localStorage.getItem('boyman-user-name');
-    if (!savedName) {
-      setShowNameModal(true);
-    } else {
-      loadQuestions(id);
-    }
-  }, [id]);
-
-  const handleNameSubmit = () => {
-    const name = nameInput.trim() || 'Anonim';
-    localStorage.setItem('boyman-user-name', name);
-    setShowNameModal(false);
     loadQuestions(id);
-  };
+  }, [id]);
 
   useEffect(() => {
     if (quizStatus === 'in-progress' && !isRunning) {
       start();
     }
   }, [quizStatus]);
-
-  // Name modal
-  if (showNameModal) {
-    return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 font-sans">
-        <div className="bg-zinc-900/60 backdrop-blur-xl rounded-3xl border border-zinc-800/50 p-8 w-full max-w-sm shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] pointer-events-none"></div>
-          <h2 className="text-xl font-extrabold text-white mb-2 relative z-10">Siapa namamu?</h2>
-          <p className="text-zinc-400 text-xs mb-6 relative z-10">Nama ini akan tercatat di riwayat kuis.</p>
-          <input
-            type="text"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNameSubmit()}
-            placeholder="Masukkan nama lengkap..."
-            maxLength={40}
-            autoFocus
-            className="w-full bg-zinc-800/80 border border-zinc-700/50 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 mb-4 relative z-10"
-          />
-          <button
-            onClick={handleNameSubmit}
-            className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm active:bg-blue-500 transition-all shadow-[0_0_20px_rgba(37,99,235,0.2)] relative z-10"
-          >
-            Mulai Kuis
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const handleSubmit = () => {
     if (window.confirm('Yakin ingin mengirim jawaban?')) {

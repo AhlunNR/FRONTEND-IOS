@@ -23,7 +23,7 @@ export default function LandingPageDesktop() {
               Berpacu dengan waktu dalam simulasi 10 menit yang menegangkan.
             </p>
             <button
-              onClick={() => navigate('/simulasi')}
+              onClick={() => navigate('/login')}
               className="px-10 py-5 bg-white text-black rounded-full font-bold text-lg hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.3)]"
             >
               Mulai Latihan

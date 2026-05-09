@@ -60,7 +60,7 @@ export default function LandingPageMobile() {
         </div>
 
         <button
-          onClick={() => navigate('/simulasi')}
+          onClick={() => navigate('/login')}
           className="w-full relative z-10 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
         >
           Mulai Latihan

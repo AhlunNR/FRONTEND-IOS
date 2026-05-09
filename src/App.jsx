@@ -1,17 +1,14 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import ChapterPage from './pages/ChapterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import HistoryPage from './pages/HistoryPage';
 import AdminPage from './pages/AdminPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import StaggeredMenu from './components/StaggeredMenu';
-
-const menuItems = [
-  { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
-  { label: 'Simulasi', ariaLabel: 'Pilih simulasi bab', link: '/simulasi' },
-  { label: 'History', ariaLabel: 'Lihat riwayat kuis', link: '/history' },
-];
 
 const socialItems = [
   { label: 'Instagram', link: 'https://www.instagram.com/lelouch.ln?igsh=c2FhdHd1NGd6azk1' },
@@ -31,10 +28,30 @@ const ReactLogo = () => (
 
 function GlobalMenu() {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   const isQuizPage = location.pathname.startsWith('/chapter');
   const isAdminPage = location.pathname.startsWith('/admin');
+  const isLoginPage = location.pathname === '/login';
 
-  if (isQuizPage || isAdminPage) return null;
+  if (isQuizPage || isAdminPage || isLoginPage) return null;
+
+  const menuItems = [
+    { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
+    { label: 'Simulasi', ariaLabel: 'Pilih simulasi bab', link: '/simulasi' },
+    { label: 'History', ariaLabel: 'Lihat riwayat kuis', link: '/history' },
+  ];
+
+  // Add login/logout to menu
+  if (user) {
+    menuItems.push({
+      label: 'Logout',
+      ariaLabel: 'Keluar dari akun',
+      link: '#',
+      onClick: (e) => { e.preventDefault(); signOut(); },
+    });
+  } else {
+    menuItems.push({ label: 'Login', ariaLabel: 'Masuk ke akun', link: '/login' });
+  }
 
   return (
     <StaggeredMenu
@@ -54,22 +71,46 @@ function GlobalMenu() {
   );
 }
 
-function App() {
+function AppRoutes() {
   return (
-    <BrowserRouter>
-      {/* Global Menu */}
+    <>
       <GlobalMenu />
       
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/simulasi" element={<HomePage />} />
-        <Route path="/chapter/:id" element={<ChapterPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        {/* Secret admin route - tidak muncul di menu */}
-        <Route path="/admin" element={<AdminPage />} />
-        {/* Catch-all route for 404 */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/simulasi" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/chapter/:id" element={
+          <ProtectedRoute>
+            <ChapterPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/history" element={
+          <ProtectedRoute>
+            <HistoryPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminPage />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchQuestionsByChapter, submitAnswers as submitAnswersApi, saveHistoryToServer } from '@/services/api';
-import useHistoryStore from './useHistoryStore';
 
 const useQuizStore = create(
   persist(
@@ -13,7 +12,7 @@ const useQuizStore = create(
       chapter: null,
       totalQuestions: 0,
       timeLimit: 603,
-      timerEndTime: null, // Absolut timestamp kapan waktu habis
+      timerEndTime: null,
 
       // Loading / Error
       isLoading: false,
@@ -49,7 +48,7 @@ const useQuizStore = create(
             currentIndex: 0,
             answers: {},
             result: null,
-            timerEndTime: Date.now() + data.timeLimit * 1000, // Waktu habis = Sekarang + limit
+            timerEndTime: Date.now() + data.timeLimit * 1000,
             isLoading: false,
             quizStatus: 'in-progress',
           });
@@ -95,7 +94,7 @@ const useQuizStore = create(
 
         try {
           const result = await submitAnswersApi(chapter, answers, timeSpent);
-          // Save to local history
+
           const getGrade = (s) => {
             if (s >= 90) return 'A';
             if (s >= 80) return 'B';
@@ -103,27 +102,8 @@ const useQuizStore = create(
             return 'D';
           };
 
-          const historyRecord = {
-            id: Date.now().toString(),
-            timestamp: new Date().toISOString(),
-            ...result
-          };
-
-          useHistoryStore.getState().addHistoryRecord(historyRecord);
-
-          // Generate or retrieve a unique device ID
-          let deviceId = localStorage.getItem('boyman-device-id');
-          if (!deviceId) {
-            deviceId = 'device-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
-            localStorage.setItem('boyman-device-id', deviceId);
-          }
-
-          // Send to server (fire-and-forget, won't block UI)
-          const userName = localStorage.getItem('boyman-user-name') || 'Anonim';
-
+          // Send to server (fire-and-forget, uses auth token)
           saveHistoryToServer({
-            deviceId,
-            userName,
             chapter: result.chapter,
             score: result.score,
             grade: getGrade(result.score),
@@ -164,9 +144,8 @@ const useQuizStore = create(
       },
     }),
     {
-      name: 'boyman-quiz-storage', // Nama key di localStorage
+      name: 'boyman-quiz-storage',
       partialize: (state) => ({
-        // Hanya simpan state krusial yang perlu diingat setelah refresh
         questions: state.questions,
         currentIndex: state.currentIndex,
         answers: state.answers,

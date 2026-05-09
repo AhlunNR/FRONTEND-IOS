@@ -1,4 +1,20 @@
+import { supabase } from '@/lib/supabase';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+/**
+ * Helper: get auth headers
+ */
+async function getAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+    };
+  }
+  return { 'Content-Type': 'application/json' };
+}
 
 /**
  * Mengambil daftar bab yang tersedia
@@ -47,29 +63,30 @@ export async function submitAnswers(chapterId, answers, timeSpent) {
 }
 
 /**
- * Menyimpan riwayat kuis ke server (Supabase)
+ * Menyimpan riwayat kuis ke server (authenticated)
  */
 export async function saveHistoryToServer(record) {
   try {
+    const headers = await getAuthHeaders();
     const res = await fetch(`${API_URL}/history`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(record),
     });
     const json = await res.json();
     return json.data;
   } catch (err) {
-    // Gagal kirim ke server tidak boleh mengganggu UX, cukup log
     console.warn('Gagal menyimpan riwayat ke server:', err.message);
     return null;
   }
 }
 
 /**
- * Mengambil semua riwayat kuis dari server (untuk admin)
+ * Mengambil riwayat kuis milik user yang login
  */
-export async function fetchAllHistory() {
-  const res = await fetch(`${API_URL}/history`);
+export async function fetchMyHistory() {
+  const headers = await getAuthHeaders();
+  const res = await fetch(`${API_URL}/history/me`, { headers });
   const json = await res.json();
 
   if (!json.success) {
@@ -80,10 +97,26 @@ export async function fetchAllHistory() {
 }
 
 /**
- * Menghapus semua riwayat kuis di server (admin)
+ * Mengambil semua riwayat kuis dari server (admin only)
+ */
+export async function fetchAllHistory() {
+  const headers = await getAuthHeaders();
+  const res = await fetch(`${API_URL}/history`, { headers });
+  const json = await res.json();
+
+  if (!json.success) {
+    throw new Error(json.message || 'Gagal memuat riwayat');
+  }
+
+  return json.data;
+}
+
+/**
+ * Menghapus semua riwayat kuis di server (admin only)
  */
 export async function deleteAllHistoryFromServer() {
-  const res = await fetch(`${API_URL}/history`, { method: 'DELETE' });
+  const headers = await getAuthHeaders();
+  const res = await fetch(`${API_URL}/history`, { method: 'DELETE', headers });
   const json = await res.json();
 
   if (!json.success) {
@@ -94,10 +127,11 @@ export async function deleteAllHistoryFromServer() {
 }
 
 /**
- * Menghapus satu riwayat kuis berdasarkan ID (admin)
+ * Menghapus satu riwayat kuis berdasarkan ID (admin only)
  */
 export async function deleteHistoryById(id) {
-  const res = await fetch(`${API_URL}/history/${id}`, { method: 'DELETE' });
+  const headers = await getAuthHeaders();
+  const res = await fetch(`${API_URL}/history/${id}`, { method: 'DELETE', headers });
   const json = await res.json();
 
   if (!json.success) {

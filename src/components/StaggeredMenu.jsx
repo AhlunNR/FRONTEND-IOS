@@ -455,17 +455,30 @@ export const StaggeredMenu = ({
               {items && items.length ? (
                 items.map((it, idx) => (
                   <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
-                    <Link
-                      className="sm-panel-item relative font-black text-4xl md:text-[3.5rem] cursor-pointer leading-none tracking-tight transition-all duration-300 ease-in-out inline-block no-underline pr-[1.4em] hover:translate-x-2"
-                      to={it.link}
-                      aria-label={it.ariaLabel}
-                      data-index={idx + 1}
-                      onClick={closeMenu}
-                    >
-                      <span className="sm-panel-itemLabel inline-block [transform-origin:0%_100%] will-change-transform">
-                        {it.label}
-                      </span>
-                    </Link>
+                    {it.onClick ? (
+                      <button
+                        className="sm-panel-item relative font-black text-4xl md:text-[3.5rem] cursor-pointer leading-none tracking-tight transition-all duration-300 ease-in-out inline-block no-underline pr-[1.4em] hover:translate-x-2 bg-transparent border-0 text-left"
+                        aria-label={it.ariaLabel}
+                        data-index={idx + 1}
+                        onClick={(e) => { closeMenu(); it.onClick(e); }}
+                      >
+                        <span className="sm-panel-itemLabel inline-block [transform-origin:0%_100%] will-change-transform">
+                          {it.label}
+                        </span>
+                      </button>
+                    ) : (
+                      <Link
+                        className="sm-panel-item relative font-black text-4xl md:text-[3.5rem] cursor-pointer leading-none tracking-tight transition-all duration-300 ease-in-out inline-block no-underline pr-[1.4em] hover:translate-x-2"
+                        to={it.link}
+                        aria-label={it.ariaLabel}
+                        data-index={idx + 1}
+                        onClick={closeMenu}
+                      >
+                        <span className="sm-panel-itemLabel inline-block [transform-origin:0%_100%] will-change-transform">
+                          {it.label}
+                        </span>
+                      </Link>
+                    )}
                   </li>
                 ))
               ) : (

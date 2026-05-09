@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useHistoryStore from '@/store/useHistoryStore';
+import { fetchMyHistory } from '@/services/api';
+import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, History, CheckCircle2, XCircle, Timer, Clock } from 'lucide-react';
 import { formatTime } from '@/utils/formatTime';
 
@@ -16,24 +17,39 @@ const CHAPTER_TITLES = {
   99: 'SOAL GABUNGAN',
 };
 
-const getGradeInfo = (score) => {
-  if (score >= 90) return { grade: 'A', color: 'text-green-400', bg: 'bg-green-400/10 border-green-400/20' };
-  if (score >= 80) return { grade: 'B', color: 'text-blue-400', bg: 'bg-blue-400/10 border-blue-400/20' };
-  if (score >= 70) return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-400/10 border-orange-400/20' };
+const getGradeInfo = (grade) => {
+  if (grade === 'A') return { grade: 'A', color: 'text-green-400', bg: 'bg-green-400/10 border-green-400/20' };
+  if (grade === 'B') return { grade: 'B', color: 'text-blue-400', bg: 'bg-blue-400/10 border-blue-400/20' };
+  if (grade === 'C') return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-400/10 border-orange-400/20' };
   return { grade: 'D', color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' };
 };
 
 export default function HistoryPage() {
   const navigate = useNavigate();
-  const { history, clearHistory } = useHistoryStore();
+  const { user } = useAuth();
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchMyHistory();
+        setHistory(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative overflow-hidden">
-      {/* Background Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
       
       <div className="p-6 pt-16 relative z-10 flex-grow">
-        {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <button 
             onClick={() => navigate(-1)}
@@ -47,26 +63,24 @@ export default function HistoryPage() {
               Riwayat Kuis
             </h1>
             <p className="text-zinc-500 mt-0.5 text-xs font-light leading-relaxed">
-              Catatan nilai kuis yang tersimpan di perangkat ini.
+              Catatan nilai kuis yang tersimpan di akun Anda.
             </p>
           </div>
         </div>
 
-        {history.length > 0 && (
-          <button 
-            onClick={() => {
-              if (window.confirm('Yakin ingin menghapus semua riwayat kuis di perangkat ini?')) {
-                clearHistory();
-              }
-            }}
-            className="text-xs text-red-400 bg-red-400/10 px-4 py-2 rounded-full border border-red-400/20 active:bg-red-400/20 transition-all font-bold tracking-wide mb-6"
-          >
-            Hapus Semua
-          </button>
+        {loading && (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-zinc-400 text-sm animate-pulse">Memuat riwayat...</div>
+          </div>
         )}
 
-        {/* List */}
-        {history.length === 0 ? (
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && history.length === 0 && (
           <div className="flex flex-col items-center justify-center mt-20 text-center">
             <div className="w-24 h-24 bg-zinc-900/50 rounded-full flex items-center justify-center mb-4 border border-zinc-800 shadow-xl">
               <History size={40} className="text-zinc-600" />
@@ -82,11 +96,13 @@ export default function HistoryPage() {
               Mulai Simulasi
             </button>
           </div>
-        ) : (
+        )}
+
+        {!loading && !error && history.length > 0 && (
           <div className="flex flex-col gap-4 pb-20">
             {history.map((item) => {
-              const gradeInfo = getGradeInfo(item.score);
-              const dateObj = new Date(item.timestamp);
+              const gradeInfo = getGradeInfo(item.grade);
+              const dateObj = new Date(item.created_at);
               const formattedDate = dateObj.toLocaleDateString('id-ID', {
                 day: 'numeric', month: 'short', year: 'numeric'
               });
@@ -105,7 +121,7 @@ export default function HistoryPage() {
                           Grade {gradeInfo.grade}
                         </span>
                         <span className="bg-zinc-800 border border-zinc-700 text-zinc-300 text-[10px] px-2 py-0.5 rounded-full font-bold">
-                          Bab {item.chapter}
+                          {item.chapter === 99 ? 'Gabungan' : `Bab ${item.chapter}`}
                         </span>
                       </div>
                       <h3 className="text-sm font-bold text-white line-clamp-1 mb-1">
@@ -125,17 +141,17 @@ export default function HistoryPage() {
                     <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
                       <CheckCircle2 size={16} className="text-green-500 mb-1" />
                       <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Benar</span>
-                      <span className="text-sm font-bold text-white">{item.correctCount}</span>
+                      <span className="text-sm font-bold text-white">{item.correct_count}</span>
                     </div>
                     <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
                       <XCircle size={16} className="text-red-500 mb-1" />
                       <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Salah</span>
-                      <span className="text-sm font-bold text-white">{item.wrongCount}</span>
+                      <span className="text-sm font-bold text-white">{item.wrong_count}</span>
                     </div>
                     <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
                       <Timer size={16} className="text-blue-500 mb-1" />
                       <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Waktu</span>
-                      <span className="text-sm font-bold text-white">{formatTime(item.timeSpent || 0)}</span>
+                      <span className="text-sm font-bold text-white">{formatTime(item.time_spent || 0)}</span>
                     </div>
                   </div>
                 </div>
