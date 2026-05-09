@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Timer, Target, BookOpen } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import Footer from '@/components/Footer';
 
 export default function LandingPageDesktop() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans">
@@ -23,7 +25,7 @@ export default function LandingPageDesktop() {
               Berpacu dengan waktu dalam simulasi 10 menit yang menegangkan.
             </p>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate(user ? '/simulasi' : '/login')}
               className="px-10 py-5 bg-white text-black rounded-full font-bold text-lg hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.3)]"
             >
               Mulai Latihan

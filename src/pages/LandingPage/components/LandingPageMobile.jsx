@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Timer, Target, BookOpen } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import Footer from '@/components/Footer';
 
 export default function LandingPageMobile() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans">
@@ -60,7 +62,7 @@ export default function LandingPageMobile() {
         </div>
 
         <button
-          onClick={() => navigate('/login')}
+          onClick={() => navigate(user ? '/simulasi' : '/login')}
           className="w-full relative z-10 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
         >
           Mulai Latihan

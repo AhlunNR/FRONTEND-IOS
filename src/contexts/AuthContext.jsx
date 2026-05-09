@@ -8,52 +8,76 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch profile from profiles table
+  // Fetch profile from profiles table with timeout
   const fetchProfile = async (userId) => {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .single()
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeout);
 
       if (error) {
         console.warn('Profile fetch error:', error.message);
         return null;
       }
       return data;
-    } catch {
+    } catch (err) {
+      console.warn('Profile fetch failed:', err?.message);
       return null;
     }
   };
 
   useEffect(() => {
-    // Check existing session on mount
+    let mounted = true;
+
     const initSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
 
-        if (session?.user) {
+        if (error) {
+          console.error('getSession error:', error.message);
+          if (mounted) setLoading(false);
+          return;
+        }
+
+        if (session?.user && mounted) {
           setUser(session.user);
           const prof = await fetchProfile(session.user.id);
-          setProfile(prof);
+          if (mounted) setProfile(prof);
         }
       } catch (err) {
         console.error('Session init error:', err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
     initSession();
 
+    // Safety timeout — never stay loading > 8 seconds
+    const safetyTimer = setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth loading safety timeout reached');
+        setLoading(false);
+      }
+    }, 8000);
+
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return;
+
         if (session?.user) {
           setUser(session.user);
           const prof = await fetchProfile(session.user.id);
-          setProfile(prof);
+          if (mounted) setProfile(prof);
         } else {
           setUser(null);
           setProfile(null);
@@ -62,7 +86,11 @@ export function AuthProvider({ children }) {
       }
     );
 
-    return () => subscription?.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(safetyTimer);
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
