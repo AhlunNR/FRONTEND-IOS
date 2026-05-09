@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
+import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
 import ChapterPage from './pages/ChapterPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -40,6 +41,11 @@ function GlobalMenu() {
     { label: 'Simulasi', ariaLabel: 'Pilih simulasi bab', link: '/simulasi' },
     { label: 'History', ariaLabel: 'Lihat riwayat kuis', link: '/history' },
   ];
+
+  // Add profile link for logged-in users
+  if (user) {
+    menuItems.push({ label: 'Profil', ariaLabel: 'Lihat profil', link: '/profile' });
+  }
 
   // Add login/logout to menu
   if (user) {
@@ -92,6 +98,11 @@ function AppRoutes() {
         <Route path="/history" element={
           <ProtectedRoute>
             <HistoryPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         } />
         <Route path="/admin" element={

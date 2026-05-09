@@ -120,7 +120,7 @@ function OverviewPanel({ history }) {
             {recentItems.map(item => {
               const info = getGradeInfo(item.grade);
               const d = new Date(item.created_at);
-              const displayName = item.user_name || 'Anonim';
+              const displayName = item.profiles?.full_name || item.profiles?.email?.split('@')[0] || 'Anonim';
               const shortId = item.device_id?.slice(-3) || '???';
               return (
                 <div key={item.id} className="flex items-center gap-3 py-1.5 border-b border-zinc-800/30 last:border-0">
@@ -150,7 +150,7 @@ function ResultsPanel({ history, onDeleteOne, onDeleteAll }) {
   const renderRow = (item, isGabungan = false) => {
     const info = getGradeInfo(item.grade);
     const d = new Date(item.created_at);
-    const displayName = item.user_name || 'Anonim';
+    const displayName = item.profiles?.full_name || item.profiles?.email?.split('@')[0] || 'Anonim';
     const shortId = item.device_id?.slice(-3) || '???';
 
     return (
