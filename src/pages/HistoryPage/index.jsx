@@ -13,6 +13,7 @@ const CHAPTER_TITLES = {
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
   24: 'P3K dan KESEHATAN',
+  99: 'SOAL GABUNGAN',
 };
 
 const getGradeInfo = (score) => {
@@ -31,39 +32,38 @@ export default function HistoryPage() {
       {/* Background Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
       
-      <div className="p-6 relative z-10 flex-grow">
+      <div className="p-6 pt-16 relative z-10 flex-grow">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3 mb-6">
           <button 
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center active:bg-zinc-800"
+            className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center active:bg-zinc-800 flex-shrink-0"
           >
             <ArrowLeft size={20} className="text-zinc-400" />
           </button>
-          
-          {history.length > 0 && (
-            <button 
-              onClick={() => {
-                if (window.confirm('Yakin ingin menghapus semua riwayat kuis di perangkat ini?')) {
-                  clearHistory();
-                }
-              }}
-              className="text-xs text-red-400 bg-red-400/10 px-4 py-2 rounded-full border border-red-400/20 active:bg-red-400/20 transition-all font-bold tracking-wide"
-            >
-              Hapus Semua
-            </button>
-          )}
+          <div className="flex-1">
+            <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+              <History className="text-blue-500" size={24} />
+              Riwayat Kuis
+            </h1>
+            <p className="text-zinc-500 mt-0.5 text-xs font-light leading-relaxed">
+              Catatan nilai kuis yang tersimpan di perangkat ini.
+            </p>
+          </div>
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-            <History className="text-blue-500" size={32} />
-            Riwayat Kuis
-          </h1>
-          <p className="text-zinc-400 mt-2 text-sm font-light leading-relaxed">
-            Catatan nilai kuis yang tersimpan di perangkat ini.
-          </p>
-        </div>
+        {history.length > 0 && (
+          <button 
+            onClick={() => {
+              if (window.confirm('Yakin ingin menghapus semua riwayat kuis di perangkat ini?')) {
+                clearHistory();
+              }
+            }}
+            className="text-xs text-red-400 bg-red-400/10 px-4 py-2 rounded-full border border-red-400/20 active:bg-red-400/20 transition-all font-bold tracking-wide mb-6"
+          >
+            Hapus Semua
+          </button>
+        )}
 
         {/* List */}
         {history.length === 0 ? (

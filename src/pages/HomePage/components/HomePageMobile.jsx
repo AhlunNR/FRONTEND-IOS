@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchChapters } from '@/services/api';
 import Footer from '@/components/Footer';
-import { Target, Timer } from 'lucide-react';
+import { Target, Timer, Zap } from 'lucide-react';
 
 const CHAPTER_TITLES = {
   1: 'PENGERTIAN, SIFAT, DAN FUNGSI',
@@ -13,6 +13,7 @@ const CHAPTER_TITLES = {
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
   24: 'P3K DAN KESEHATAN',
+  99: 'SOAL GABUNGAN',
 };
 
 export default function HomePageMobile() {
@@ -57,6 +58,9 @@ export default function HomePageMobile() {
     );
   }
 
+  const regularChapters = chapters.filter(ch => ch.chapter !== 99);
+  const gabunganChapter = chapters.find(ch => ch.chapter === 99);
+
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative overflow-hidden">
       {/* Glow */}
@@ -69,8 +73,54 @@ export default function HomePageMobile() {
           <p className="text-zinc-400 mt-2 text-sm font-light leading-relaxed">Pilih bab dari Buku Boyman untuk menguji kemampuan Anda.</p>
         </div>
 
+        {/* === SOAL GABUNGAN (SPESIAL) === */}
+        {gabunganChapter && (
+          <div className="mb-8 relative z-10">
+            <button
+              onClick={() => navigate(`/chapter/${gabunganChapter.chapter}`)}
+              className="w-full bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-red-500/10 backdrop-blur-xl p-6 rounded-3xl border border-amber-500/30 flex flex-col items-start gap-4 active:border-amber-400/60 active:bg-amber-500/10 transition-all text-left shadow-lg shadow-amber-500/5 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-[50px] pointer-events-none"></div>
+              <div className="flex items-center gap-4 w-full relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/30">
+                  <Zap size={22} className="text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-white tracking-wide">Soal Gabungan</h3>
+                    <span className="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-500/30 uppercase tracking-wider">Ujian</span>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-200/60 font-medium leading-relaxed relative z-10">
+                Campuran soal dari semua bab — uji kesiapan Anda secara menyeluruh.
+              </p>
+
+              <div className="mt-2 pt-4 border-t border-amber-500/20 w-full flex justify-between items-center relative z-10">
+                <div className="flex items-center gap-2 text-amber-400/70">
+                  <Target size={12} />
+                  <span className="text-[10px] font-semibold">{gabunganChapter.questionCount} Soal</span>
+                </div>
+                <div className="flex items-center gap-2 text-amber-400/70">
+                  <Timer size={12} />
+                  <span className="text-[10px] font-semibold">10:03</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* === SEPARATOR === */}
+        <div className="flex items-center gap-3 mb-6 relative z-10">
+          <div className="h-px flex-1 bg-zinc-800/50"></div>
+          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Per Bab</span>
+          <div className="h-px flex-1 bg-zinc-800/50"></div>
+        </div>
+
+        {/* === BAB-BAB REGULER === */}
         <div className="flex flex-col gap-4 relative z-10 mb-16">
-          {chapters.map((ch) => (
+          {regularChapters.map((ch) => (
             <button
               key={ch.chapter}
               onClick={() => navigate(`/chapter/${ch.chapter}`)}

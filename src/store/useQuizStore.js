@@ -119,8 +119,11 @@ const useQuizStore = create(
           }
 
           // Send to server (fire-and-forget, won't block UI)
+          const userName = localStorage.getItem('boyman-user-name') || 'Anonim';
+
           saveHistoryToServer({
             deviceId,
+            userName,
             chapter: result.chapter,
             score: result.score,
             grade: getGrade(result.score),

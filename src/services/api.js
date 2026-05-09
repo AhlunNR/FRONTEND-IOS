@@ -78,3 +78,31 @@ export async function fetchAllHistory() {
 
   return json.data;
 }
+
+/**
+ * Menghapus semua riwayat kuis di server (admin)
+ */
+export async function deleteAllHistoryFromServer() {
+  const res = await fetch(`${API_URL}/history`, { method: 'DELETE' });
+  const json = await res.json();
+
+  if (!json.success) {
+    throw new Error(json.message || 'Gagal menghapus riwayat');
+  }
+
+  return true;
+}
+
+/**
+ * Menghapus satu riwayat kuis berdasarkan ID (admin)
+ */
+export async function deleteHistoryById(id) {
+  const res = await fetch(`${API_URL}/history/${id}`, { method: 'DELETE' });
+  const json = await res.json();
+
+  if (!json.success) {
+    throw new Error(json.message || 'Gagal menghapus riwayat');
+  }
+
+  return true;
+}
