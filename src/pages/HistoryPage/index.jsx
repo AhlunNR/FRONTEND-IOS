@@ -66,7 +66,7 @@ export default function HistoryPage() {
         {/* Header */}
         <div className="mb-10 border-b border-zinc-800 pb-6 flex items-start gap-4">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/simulasi')}
             className="w-9 h-9 md:w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800 transition-colors flex items-center justify-center flex-shrink-0 mt-1"
           >
             <ArrowLeft size={18} className="text-zinc-400" />

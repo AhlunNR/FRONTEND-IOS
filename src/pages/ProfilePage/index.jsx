@@ -61,7 +61,7 @@ export default function ProfilePage() {
       <div className="sticky top-0 z-10 bg-[#050505]/90 backdrop-blur-xl border-b border-zinc-800/50">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/simulasi')}
             className="w-9 h-9 rounded-xl bg-zinc-800/60 flex items-center justify-center hover:bg-zinc-700/60 transition-colors"
           >
             <ArrowLeft size={16} />
