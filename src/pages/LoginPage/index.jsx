@@ -25,27 +25,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 font-sans relative overflow-hidden">
-      {/* Glow */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-80 h-80 bg-purple-600/8 rounded-full blur-[100px] pointer-events-none"></div>
-
-      <div className="bg-zinc-900/50 backdrop-blur-2xl rounded-3xl border border-zinc-800/50 p-10 w-full max-w-sm shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/8 rounded-full blur-[60px] pointer-events-none"></div>
-
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 font-sans relative">
+      <div className="bg-zinc-900/30 border border-zinc-850 rounded-xl p-8 w-full max-w-sm shadow-sm relative overflow-hidden">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8 relative z-10">
-          <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
-            <Shield size={28} className="text-blue-400" />
+          <div className="w-12 h-12 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4 text-zinc-400">
+            <Shield size={24} />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Boyman Quiz</h1>
-          <p className="text-zinc-500 text-xs mt-1 font-medium">Masuk untuk mulai latihan</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Boyman Quiz</h1>
+          <p className="text-zinc-500 text-xs mt-1.5 leading-relaxed font-normal">Masuk untuk mulai latihan</p>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-5 text-center relative z-10">
-            <p className="text-red-400 text-xs">{error}</p>
+          <div className="bg-rose-500/5 border border-rose-500/10 rounded-lg p-3 mb-5 text-center relative z-10">
+            <p className="text-rose-400 text-xs font-medium">{error}</p>
           </div>
         )}
 
@@ -53,12 +47,12 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={signingIn || loading}
-          className="w-full flex items-center justify-center gap-3 py-3.5 bg-white text-zinc-800 rounded-xl font-bold text-sm active:bg-zinc-100 transition-all shadow-lg disabled:opacity-50 relative z-10"
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white text-zinc-950 hover:bg-zinc-200 disabled:hover:bg-white font-semibold text-sm rounded-lg transition-colors duration-250 shadow-sm disabled:opacity-50 relative z-10"
         >
           {signingIn ? (
-            <div className="w-5 h-5 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin"></div>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24">
+            <svg width="18" height="18" viewBox="0 0 24 24" className="flex-shrink-0">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -68,8 +62,8 @@ export default function LoginPage() {
           {signingIn ? 'Memproses...' : 'Masuk dengan Google'}
         </button>
 
-        <p className="text-center text-[10px] text-zinc-600 mt-6 relative z-10 leading-relaxed">
-          Data kuis Anda akan tersimpan aman di akun Google Anda.
+        <p className="text-center text-[10px] text-zinc-500 mt-6 relative z-10 leading-relaxed font-normal">
+          Data kuis Anda akan tersimpan secara terstruktur dan aman di akun Google Anda.
         </p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { fetchMyHistory } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, History, CheckCircle2, XCircle, Timer, Clock } from 'lucide-react';
 import { formatTime } from '@/utils/formatTime';
+import Footer from '@/components/Footer';
 
 const CHAPTER_TITLES = {
   1: 'PENGERTIAN, SIFAT, FUNGSI',
@@ -17,11 +18,25 @@ const CHAPTER_TITLES = {
   99: 'SOAL GABUNGAN',
 };
 
+// Helper function to format titles cleanly to Title Case
+const formatTitle = (title) => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .split(' ')
+    .map((word) => {
+      if (word.startsWith('p3k')) return 'P3K';
+      if (word === 'dan' || word === 'di') return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+};
+
 const getGradeInfo = (grade) => {
-  if (grade === 'A') return { grade: 'A', color: 'text-green-400', bg: 'bg-green-400/10 border-green-400/20' };
-  if (grade === 'B') return { grade: 'B', color: 'text-blue-400', bg: 'bg-blue-400/10 border-blue-400/20' };
-  if (grade === 'C') return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-400/10 border-orange-400/20' };
-  return { grade: 'D', color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' };
+  if (grade === 'A') return { grade: 'A', color: 'text-emerald-400', bg: 'bg-emerald-500/5 border-emerald-500/20' };
+  if (grade === 'B') return { grade: 'B', color: 'text-blue-400', bg: 'bg-blue-500/5 border-blue-500/20' };
+  if (grade === 'C') return { grade: 'C', color: 'text-amber-400', bg: 'bg-amber-500/5 border-amber-500/20' };
+  return { grade: 'D', color: 'text-rose-400', bg: 'bg-rose-500/5 border-rose-500/20' };
 };
 
 export default function HistoryPage() {
@@ -46,52 +61,50 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative overflow-hidden">
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-      
-      <div className="p-6 pt-16 relative z-10 flex-grow">
-        <div className="flex items-center gap-3 mb-6">
+    <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative">
+      <div className="flex-grow p-6 md:p-8 pt-16 md:pt-20 relative z-10 max-w-3xl mx-auto w-full">
+        {/* Header */}
+        <div className="mb-10 border-b border-zinc-800 pb-6 flex items-start gap-4">
           <button 
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center active:bg-zinc-800 flex-shrink-0"
+            className="w-9 h-9 md:w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800 transition-colors flex items-center justify-center flex-shrink-0 mt-1"
           >
-            <ArrowLeft size={20} className="text-zinc-400" />
+            <ArrowLeft size={18} className="text-zinc-400" />
           </button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
-              <History className="text-blue-500" size={24} />
-              Riwayat Kuis
-            </h1>
-            <p className="text-zinc-500 mt-0.5 text-xs font-light leading-relaxed">
-              Catatan nilai kuis yang tersimpan di akun Anda.
-            </p>
+          <div>
+            <div className="inline-flex items-center px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-3">
+              <span>Aktivitas Kuis</span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight">Riwayat Kuis</h1>
+            <p className="text-zinc-500 text-xs md:text-sm mt-1 leading-relaxed">Catatan nilai kuis yang tersimpan secara terstruktur di akun Anda.</p>
           </div>
         </div>
 
         {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-zinc-400 text-sm animate-pulse">Memuat riwayat...</div>
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-8 h-8 border-2 border-zinc-800 border-t-zinc-400 rounded-full animate-spin"></div>
+            <p className="text-zinc-500 text-xs font-medium tracking-wide">Memuat riwayat...</p>
           </div>
         )}
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
-            <p className="text-red-400 text-sm">{error}</p>
+          <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-4 text-center">
+            <p className="text-rose-400 text-sm font-medium">{error}</p>
           </div>
         )}
 
         {!loading && !error && history.length === 0 && (
           <div className="flex flex-col items-center justify-center mt-20 text-center">
-            <div className="w-24 h-24 bg-zinc-900/50 rounded-full flex items-center justify-center mb-4 border border-zinc-800 shadow-xl">
-              <History size={40} className="text-zinc-600" />
+            <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center mb-5 shadow-sm">
+              <History size={32} className="text-zinc-500" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Belum ada riwayat</h3>
-            <p className="text-zinc-500 text-sm max-w-[250px] leading-relaxed">
-              Selesaikan kuis di menu simulasi untuk melihat hasilnya di sini.
+            <h3 className="text-lg font-bold text-white mb-2">Belum Ada Riwayat</h3>
+            <p className="text-zinc-500 text-xs max-w-[280px] leading-relaxed font-normal">
+              Selesaikan kuis di menu simulasi terlebih dahulu untuk melihat hasil evaluasi Anda di sini.
             </p>
             <button 
               onClick={() => navigate('/simulasi')}
-              className="mt-8 px-6 py-3 bg-blue-600/10 text-blue-400 border border-blue-600/30 rounded-full font-bold active:bg-blue-600/20"
+              className="mt-6 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-lg font-semibold text-xs transition-colors shadow-sm"
             >
               Mulai Simulasi
             </button>
@@ -111,47 +124,45 @@ export default function HistoryPage() {
               });
 
               return (
-                <div key={item.id} className="bg-zinc-900/40 backdrop-blur-xl p-5 rounded-3xl border border-zinc-800/50 shadow-lg relative overflow-hidden">
-                  <div className={`absolute top-0 right-0 w-24 h-24 blur-[40px] opacity-20 pointer-events-none ${gradeInfo.bg.split(' ')[0]}`}></div>
-                  
+                <div key={item.id} className="bg-zinc-900/30 border border-zinc-850 rounded-xl p-5 hover:border-zinc-700 transition-colors duration-200 flex flex-col justify-between relative overflow-hidden">
                   <div className="flex justify-between items-start mb-4 relative z-10">
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${gradeInfo.bg} ${gradeInfo.color}`}>
+                      <div className="flex items-center gap-2 mb-2.5">
+                        <span className={`text-[9px] px-2 py-0.5 rounded font-bold border ${gradeInfo.bg} ${gradeInfo.color} uppercase tracking-wider`}>
                           Grade {gradeInfo.grade}
                         </span>
-                        <span className="bg-zinc-800 border border-zinc-700 text-zinc-300 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        <span className="bg-zinc-900 border border-zinc-800 text-zinc-400 text-[9px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider">
                           {item.chapter === 99 ? 'Gabungan' : `Bab ${item.chapter}`}
                         </span>
                       </div>
-                      <h3 className="text-sm font-bold text-white line-clamp-1 mb-1">
-                        {CHAPTER_TITLES[item.chapter] || `Materi Bab ${item.chapter}`}
+                      <h3 className="text-sm font-bold text-white line-clamp-1 mb-1.5">
+                        {CHAPTER_TITLES[item.chapter] ? formatTitle(CHAPTER_TITLES[item.chapter]) : `Materi Bab ${item.chapter}`}
                       </h3>
-                      <p className="text-xs text-zinc-500 flex items-center gap-1 font-medium">
-                        <Clock size={12} />
+                      <p className="text-xs text-zinc-500 flex items-center gap-1.5 font-normal">
+                        <Clock size={12} className="text-zinc-400" />
                         {formattedDate} • {formattedTime}
                       </p>
                     </div>
-                    <div className="flex flex-col items-center justify-center">
-                      <span className={`text-3xl font-black tracking-tighter ${gradeInfo.color}`}>{item.score}</span>
+                    <div className="flex flex-col items-center justify-center flex-shrink-0 ml-4">
+                      <span className={`text-3xl font-bold tracking-tight ${gradeInfo.color}`}>{item.score}</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-zinc-800/50 relative z-10">
-                    <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
-                      <CheckCircle2 size={16} className="text-green-500 mb-1" />
-                      <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Benar</span>
-                      <span className="text-sm font-bold text-white">{item.correct_count}</span>
+                  <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-zinc-850/80 relative z-10">
+                    <div className="flex flex-col items-center p-2 rounded-lg bg-zinc-900/50 border border-zinc-850/40">
+                      <CheckCircle2 size={15} className="text-emerald-500 mb-1" />
+                      <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-0.5">Benar</span>
+                      <span className="text-xs font-bold text-white">{item.correct_count}</span>
                     </div>
-                    <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
-                      <XCircle size={16} className="text-red-500 mb-1" />
-                      <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Salah</span>
-                      <span className="text-sm font-bold text-white">{item.wrong_count}</span>
+                    <div className="flex flex-col items-center p-2 rounded-lg bg-zinc-900/50 border border-zinc-850/40">
+                      <XCircle size={15} className="text-rose-500 mb-1" />
+                      <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-0.5">Salah</span>
+                      <span className="text-xs font-bold text-white">{item.wrong_count}</span>
                     </div>
-                    <div className="flex flex-col items-center p-2 rounded-xl bg-zinc-900/50 border border-zinc-800/30">
-                      <Timer size={16} className="text-blue-500 mb-1" />
-                      <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Waktu</span>
-                      <span className="text-sm font-bold text-white">{formatTime(item.time_spent || 0)}</span>
+                    <div className="flex flex-col items-center p-2 rounded-lg bg-zinc-900/50 border border-zinc-850/40">
+                      <Timer size={15} className="text-blue-500 mb-1" />
+                      <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider mb-0.5">Waktu</span>
+                      <span className="text-xs font-bold text-white">{formatTime(item.time_spent || 0)}</span>
                     </div>
                   </div>
                 </div>
@@ -160,6 +171,7 @@ export default function HistoryPage() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
