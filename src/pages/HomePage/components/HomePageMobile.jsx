@@ -13,7 +13,8 @@ const CHAPTER_TITLES = {
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
   24: 'P3K DAN KESEHATAN',
-  99: 'SOAL GABUNGAN',
+  99: 'SOAL GABUNGAN I',
+  100: 'UJIAN GABUNGAN II (HARDCORE)',
 };
 
 // Helper function to format titles cleanly to Title Case
@@ -25,6 +26,7 @@ const formatTitle = (title) => {
     .map((word) => {
       if (word.startsWith('p3k')) return 'P3K';
       if (word === 'dan' || word === 'di') return word;
+      if (word === 'ii') return 'II';
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
     .join(' ');
@@ -53,23 +55,21 @@ export default function HomePageMobile() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center font-sans">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-zinc-800 border-t-zinc-400 rounded-full animate-spin"></div>
-          <p className="text-zinc-500 text-[11px] font-medium tracking-wide">Memuat data simulasi...</p>
-        </div>
+        <div className="w-8 h-8 border-2 border-zinc-800 border-t-zinc-400 rounded-full animate-spin mb-3"></div>
+        <p className="text-zinc-500 text-[11px] font-medium tracking-wide">Memuat data simulasi...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6 font-sans">
-        <div className="w-full max-w-sm bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 text-center shadow-lg">
-          <h3 className="text-base font-bold text-white mb-2">Terjadi Kesalahan</h3>
-          <p className="text-zinc-400 text-xs mb-5 leading-relaxed">{error}</p>
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-5 font-sans">
+        <div className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 text-center shadow-lg">
+          <h3 className="text-sm font-bold text-white mb-2">Terjadi Kesalahan</h3>
+          <p className="text-zinc-400 text-[11px] mb-4 leading-relaxed">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="w-full py-2 bg-zinc-800 hover:bg-zinc-750 text-white border border-zinc-750 rounded-lg font-semibold text-xs transition-colors"
+            className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-750 text-white border border-zinc-700 rounded-lg font-semibold text-xs transition-colors"
           >
             Coba Lagi
           </button>
@@ -78,61 +78,95 @@ export default function HomePageMobile() {
     );
   }
 
-  const regularChapters = chapters.filter(ch => ch.chapter !== 99);
+  const regularChapters = chapters.filter(ch => ch.chapter !== 99 && ch.chapter !== 100);
   const gabunganChapter = chapters.find(ch => ch.chapter === 99);
+  const gabungan2Chapter = chapters.find(ch => ch.chapter === 100);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative">
-      <div className="flex-grow p-6 mt-8 relative z-10 w-full">
+    <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans pb-6">
+      <div className="flex-grow p-5 mt-16">
         
         {/* Header */}
-        <div className="mb-8 border-b border-zinc-800 pb-5">
-          <div className="inline-flex items-center px-2.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-semibold uppercase tracking-wider mb-2">
+        <div className="mb-6 border-b border-zinc-800/80 pb-5">
+          <div className="inline-flex items-center px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-semibold uppercase tracking-wider mb-2.5">
             <span>Simulasi Pembelajaran</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">Pilih Kuis Simulasi</h1>
-          <p className="text-zinc-500 text-xs mt-1.5 leading-relaxed">Pilih bab Buku Boyman untuk menguji kesiapan pemahaman Anda.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">Pilih Kuis</h1>
+          <p className="text-zinc-500 text-xs mt-1.5 leading-relaxed">Pilih bab Buku Boyman untuk menguji kesiapan Anda.</p>
         </div>
 
-        {/* === SOAL GABUNGAN (SPESIAL - ACCENT LEFT BORDER) === */}
+        {/* === UJIAN GABUNGAN II (HARDCORE) === */}
+        {gabungan2Chapter && (
+          <div className="mb-4">
+            <button
+              onClick={() => navigate(`/chapter/${gabungan2Chapter.chapter}`)}
+              className="w-full text-left border-l-[3px] border-l-red-500 bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 flex flex-col relative overflow-hidden shadow-sm active:scale-[0.98] transition-transform"
+            >
+              <div className="absolute top-[-20%] right-[-10%] w-24 h-24 bg-red-500/10 blur-[30px]"></div>
+              <div className="flex justify-between items-start mb-3 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500">
+                    <Target size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-[15px] font-bold text-white leading-tight mb-0.5">Ujian Gabungan II</h3>
+                    <span className="text-[9px] text-red-400 font-semibold tracking-wide animate-pulse">HARDCORE MODE</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed mb-3 relative z-10">
+                Mode tersulit: 50 soal lintas bab dengan opsi jawaban yang diacak secara sistem.
+              </p>
+              <div className="mt-auto pt-3 border-t border-zinc-800/80 w-full flex justify-between items-center text-[10px] text-zinc-500 relative z-10">
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-1.5 text-red-400/80">
+                    <Target size={12} />
+                    <span className="font-semibold">{gabungan2Chapter.questionCount} Soal Acak</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Timer size={12} />
+                    <span className="font-semibold">10 Menit</span>
+                  </div>
+                </div>
+                <ArrowRight size={14} className="text-red-400" />
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* === SOAL GABUNGAN I === */}
         {gabunganChapter && (
           <div className="mb-6">
             <button
               onClick={() => navigate(`/chapter/${gabunganChapter.chapter}`)}
-              className="w-full text-left border-l-4 border-l-amber-500 bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 flex flex-col gap-3 shadow-sm active:bg-zinc-900/60 transition-colors"
+              className="w-full text-left border-l-[3px] border-l-amber-500 bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 flex flex-col relative overflow-hidden shadow-sm active:scale-[0.98] transition-transform"
             >
-              <div className="flex items-center justify-between w-full">
+              <div className="flex justify-between items-start mb-3 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-500">
+                  <div className="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-500">
                     <Zap size={18} />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-white">Soal Gabungan</h3>
-                      <span className="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-semibold uppercase tracking-wider">
-                        Ujian
-                      </span>
-                    </div>
+                    <h3 className="text-[15px] font-bold text-white leading-tight mb-0.5">Soal Gabungan I</h3>
+                    <span className="text-[9px] text-amber-500/80 font-semibold tracking-wide">UJIAN STANDAR</span>
                   </div>
                 </div>
-                <div className="text-zinc-400">
-                  <ArrowRight size={14} />
-                </div>
               </div>
-              
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Campuran soal acak dari seluruh bab Buku Boyman. Uji kesiapan materi secara menyeluruh.
+              <p className="text-[11px] text-zinc-400 leading-relaxed mb-3 relative z-10">
+                Campuran soal reguler dari seluruh bab secara menyeluruh.
               </p>
-
-              <div className="mt-1 pt-3 border-t border-zinc-800/80 w-full flex justify-between items-center text-[10px] text-zinc-500">
-                <div className="flex items-center gap-1">
-                  <Target size={12} className="text-zinc-400" />
-                  <span>{gabunganChapter.questionCount} Soal</span>
+              <div className="mt-auto pt-3 border-t border-zinc-800/80 w-full flex justify-between items-center text-[10px] text-zinc-500 relative z-10">
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <Target size={12} />
+                    <span className="font-semibold">{gabunganChapter.questionCount} Soal</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Timer size={12} />
+                    <span className="font-semibold">10 Menit</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Timer size={12} className="text-zinc-400" />
-                  <span>10 Menit</span>
-                </div>
+                <ArrowRight size={14} className="text-zinc-600" />
               </div>
             </button>
           </div>

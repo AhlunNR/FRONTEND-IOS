@@ -15,7 +15,8 @@ const CHAPTER_TITLES = {
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
   24: 'P3K dan KESEHATAN',
-  99: 'SOAL GABUNGAN',
+  99: 'SOAL GABUNGAN I',
+  100: 'UJIAN GABUNGAN II (HARDCORE)',
 };
 
 export default function ChapterPageMobile() {

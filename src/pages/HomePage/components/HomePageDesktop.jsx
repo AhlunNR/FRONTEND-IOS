@@ -13,7 +13,8 @@ const CHAPTER_TITLES = {
   15: 'MEMBACA PETA (NAVIGASI)',
   20: 'SANDI PRAMUKA',
   24: 'P3K DAN KESEHATAN',
-  99: 'SOAL GABUNGAN',
+  99: 'SOAL GABUNGAN I',
+  100: 'UJIAN GABUNGAN II (HARDCORE)',
 };
 
 // Helper function to format titles cleanly to Title Case
@@ -25,6 +26,7 @@ const formatTitle = (title) => {
     .map((word) => {
       if (word.startsWith('p3k')) return 'P3K';
       if (word === 'dan' || word === 'di') return word;
+      if (word === 'ii') return 'II';
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
     .join(' ');
@@ -78,8 +80,9 @@ export default function HomePageDesktop() {
     );
   }
 
-  const regularChapters = chapters.filter(ch => ch.chapter !== 99);
+  const regularChapters = chapters.filter(ch => ch.chapter !== 99 && ch.chapter !== 100);
   const gabunganChapter = chapters.find(ch => ch.chapter === 99);
+  const gabungan2Chapter = chapters.find(ch => ch.chapter === 100);
 
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative">
@@ -94,7 +97,52 @@ export default function HomePageDesktop() {
           <p className="text-zinc-500 text-sm mt-1 leading-relaxed">Pilih bab Buku Boyman untuk menguji kesiapan pemahaman Anda.</p>
         </div>
 
-        {/* === SOAL GABUNGAN (SPESIAL - ACCENT LEFT BORDER) === */}
+        {/* === UJIAN GABUNGAN II (HARDCORE) === */}
+        {gabungan2Chapter && (
+          <div className="mb-6">
+            <div className="w-full border-l-4 border-l-red-500 bg-zinc-900/40 border border-zinc-800 rounded-xl p-6 flex items-center justify-between shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 blur-[50px]"></div>
+              <div className="flex items-center gap-5 relative z-10">
+                <div className="w-12 h-12 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 flex-shrink-0">
+                  <Target size={22} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-lg font-bold text-white">Ujian Gabungan II (Hardcore)</h3>
+                    <span className="text-[9px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-semibold uppercase tracking-wider animate-pulse">
+                      Extreme
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed max-w-xl">
+                    Mode tersulit: 50 Soal diacak total dari seluruh materi bab. Opsi jawaban (A,B,C,D) akan diacak posisinya di setiap sesi. Berani mencoba?
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-6 flex-shrink-0 relative z-10">
+                <div className="flex flex-col items-end gap-1.5 text-zinc-500 text-[11px]">
+                  <div className="flex items-center gap-1.5">
+                    <Target size={12} className="text-red-500/70" />
+                    <span className="font-medium text-red-400/80">{gabungan2Chapter.questionCount} Soal Acak</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Timer size={12} />
+                    <span className="font-medium">10 Menit</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate(`/chapter/${gabungan2Chapter.chapter}`)}
+                  className="px-4 py-2 bg-red-600 text-white hover:bg-red-500 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-[0_0_15px_rgba(220,38,38,0.3)]"
+                >
+                  <span>Mulai Tantangan</span>
+                  <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* === SOAL GABUNGAN I (SPESIAL) === */}
         {gabunganChapter && (
           <div className="mb-10">
             <div className="w-full border-l-4 border-l-amber-500 bg-zinc-900/40 border border-zinc-800 rounded-xl p-6 flex items-center justify-between shadow-sm">
@@ -104,13 +152,13 @@ export default function HomePageDesktop() {
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold text-white">Soal Gabungan</h3>
+                    <h3 className="text-lg font-bold text-white">Soal Gabungan I</h3>
                     <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-semibold uppercase tracking-wider">
                       Ujian
                     </span>
                   </div>
                   <p className="text-xs text-zinc-400 mt-1 leading-relaxed max-w-xl">
-                    Campuran soal acak dari seluruh bab Buku Boyman secara menyeluruh. Simulasi terbaik untuk menguji kesiapan materi.
+                    Campuran soal reguler dari seluruh bab Buku Boyman secara menyeluruh. Simulasi terbaik untuk menguji kesiapan materi dasar.
                   </p>
                 </div>
               </div>
