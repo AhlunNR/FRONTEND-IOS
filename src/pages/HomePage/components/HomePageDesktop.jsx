@@ -15,6 +15,7 @@ const CHAPTER_TITLES = {
   24: 'P3K DAN KESEHATAN',
   99: 'SOAL GABUNGAN I',
   100: 'UJIAN GABUNGAN II (HARDCORE)',
+  101: 'GRAND MASTER TRIAL',
 };
 
 // Helper function to format titles cleanly to Title Case
@@ -26,7 +27,7 @@ const formatTitle = (title) => {
     .map((word) => {
       if (word.startsWith('p3k')) return 'P3K';
       if (word === 'dan' || word === 'di') return word;
-      if (word === 'ii') return 'II';
+      if (word === 'ii' || word === 'iii') return word.toUpperCase();
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
     .join(' ');
@@ -80,9 +81,10 @@ export default function HomePageDesktop() {
     );
   }
 
-  const regularChapters = chapters.filter(ch => ch.chapter !== 99 && ch.chapter !== 100);
+  const regularChapters = chapters.filter(ch => ch.chapter !== 99 && ch.chapter !== 100 && ch.chapter !== 101);
   const gabunganChapter = chapters.find(ch => ch.chapter === 99);
   const gabungan2Chapter = chapters.find(ch => ch.chapter === 100);
+  const grandMasterChapter = chapters.find(ch => ch.chapter === 101);
 
   return (
     <div className="min-h-screen bg-[#050505] text-zinc-300 flex flex-col font-sans relative">
@@ -96,6 +98,53 @@ export default function HomePageDesktop() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">Pilih Kuis Simulasi</h1>
           <p className="text-zinc-500 text-sm mt-1 leading-relaxed">Pilih bab Buku Boyman untuk menguji kesiapan pemahaman Anda.</p>
         </div>
+
+        {/* === GRAND MASTER TRIAL (SPEEDRUN) === */}
+        {grandMasterChapter && (
+          <div className="mb-6">
+            <div className="w-full border-l-[5px] border-l-violet-600 bg-zinc-900/60 border border-zinc-800 rounded-xl p-6 flex items-center justify-between shadow-sm relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute top-[-50%] right-[-10%] w-48 h-48 bg-violet-600/10 blur-[60px] rounded-full pointer-events-none"></div>
+              
+              <div className="flex items-center gap-5 relative z-10">
+                <div className="w-14 h-14 rounded-lg bg-violet-950/40 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+                  <Zap size={26} className="animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl font-black text-white tracking-wide">GRAND MASTER TRIAL</h3>
+                    <span className="text-[9px] bg-violet-500/20 text-violet-300 border border-violet-500/30 px-2.5 py-0.5 rounded font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+                      Speedrun
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed max-w-2xl font-medium">
+                    Evaluasi menyeluruh tingkat lanjut dengan 100 butir soal eksklusif. Durasi pengerjaan sangat terbatas untuk mengukur kecepatan berpikir dan refleks pemahaman kepramukaan secara presisi.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-6 flex-shrink-0 relative z-10">
+                <div className="flex flex-col items-end gap-2 text-zinc-500 text-[11px]">
+                  <div className="flex items-center gap-2">
+                    <Target size={13} className="text-violet-400/80" />
+                    <span className="font-bold text-violet-200/90 tracking-wide">{grandMasterChapter.questionCount} Soal Eksklusif</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Timer size={13} className="text-red-400/80 animate-pulse" />
+                    <span className="font-bold text-red-400">5 Menit (3 Detik/Soal)</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate(`/chapter/${grandMasterChapter.chapter}`)}
+                  className="px-5 py-2.5 bg-violet-600 text-white hover:bg-violet-500 font-bold text-xs rounded-lg transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] hover:-translate-y-0.5"
+                >
+                  <span className="tracking-wide">Mulai Tantangan</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* === UJIAN GABUNGAN II (HARDCORE) === */}
         {gabungan2Chapter && (

@@ -17,6 +17,7 @@ const CHAPTER_TITLES = {
   24: 'P3K dan KESEHATAN',
   99: 'SOAL GABUNGAN I',
   100: 'UJIAN GABUNGAN II (HARDCORE)',
+  101: 'GRAND MASTER TRIAL',
 };
 
 export default function ChapterPageMobile() {
